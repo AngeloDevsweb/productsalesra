@@ -9,6 +9,7 @@ use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PrecioController;
 use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\ProductoStockController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\QrProductos;
 use App\Http\Controllers\ReportePedidoController;
@@ -44,6 +45,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/producto', [ProductoController::class, 'viewProduct'])->name('producto.view');
     Route::get('/productos/crear', [ProductoController::class, 'create'])->name('producto.create');
     Route::post('/productos/save', [ProductoController::class, 'store'])->name('productos.store');
+
+    //ruta de productos y stock
+    // web.php
+    Route::get('/producto-stock', [ProductoStockController::class, 'create'])->name('producto-stock.create');
+    Route::post('/producto-stock', [ProductoStockController::class, 'store'])->name('producto-stock.store');
+
 
     Route::get('/categoria',[CategoriaController::class,'createCategoria'])->name('categoria.create');
     Route::post('/categoria', [CategoriaController::class, 'storeCategoria'])->name('categoria.store');
