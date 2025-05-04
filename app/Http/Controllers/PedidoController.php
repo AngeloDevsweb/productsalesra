@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Almacenproducto;
 use App\Models\Cliente;
 use App\Models\Detallepedido;
 use App\Models\Metodopago;
@@ -32,51 +33,64 @@ class PedidoController extends Controller
     }
 
     public function store(Request $request)
-    {
-        // Validación
-        $request->validate([
-            'FechaPedido' => 'required|date',
-            'EstadoPedido' => 'required|string',
-            'idCliente' => 'required|exists:cliente,id',
-            'idMetodoPago' => 'required|exists:metodopago,id',
-            'detalles' => 'required|array',
-            'detalles.*.idProducto' => 'required|exists:producto,id',
-            'detalles.*.Cantidad' => 'required|integer|min:1',
-            'detalles.*.PrecioCompra' => 'required|numeric|min:0',
+{
+    $request->validate([
+        'FechaPedido' => 'required|date',
+        'EstadoPedido' => 'required|string',
+        'idCliente' => 'required|exists:cliente,id',
+        'idMetodoPago' => 'required|exists:metodopago,id',
+        'detalles' => 'required|array',
+        'detalles.*.idProducto' => 'required|exists:producto,id',
+        'detalles.*.Cantidad' => 'required|integer|min:1',
+        'detalles.*.PrecioCompra' => 'required|numeric|min:0',
+    ]);
+
+    DB::beginTransaction();
+    try {
+        // Crear el pedido principal
+        $pedido = Pedido::create([
+            'FechaPedido' => $request->FechaPedido,
+            'EstadoPedido' => $request->EstadoPedido,
+            'idCliente' => $request->idCliente,
+            'idMetodoPago' => $request->idMetodoPago,
+            'idEmpresa' => 2, // Fijo como ya manejas
         ]);
 
-        DB::beginTransaction();
-        try {
-            // Crear el pedido
-            $pedido = Pedido::create([
-                'FechaPedido' => $request->FechaPedido,
-                'EstadoPedido' => $request->EstadoPedido,
-                'idCliente' => $request->idCliente,
-                'idMetodoPago' => $request->idMetodoPago,
-                'idEmpresa' => 2,
-            ]);
+        foreach ($request->detalles as $detalle) {
+            $almacenProducto = Almacenproducto::where('idProducto', $detalle['idProducto'])->first();
 
-            // Insertar detalles del pedido
-            foreach ($request->detalles as $detalle) {
-                DetallePedido::create([
-                    'idPedido' => $pedido->id,
-                    'idProducto' => $detalle['idProducto'],
-                    'Cantidad' => $detalle['Cantidad'],
-                    'PrecioCompra' => $detalle['PrecioCompra'],
-                ]);
+            if (!$almacenProducto) {
+                throw new \Exception("El producto con ID {$detalle['idProducto']} no está registrado en el almacén.");
             }
 
-            DB::commit();
-            return redirect()->route('pedido.create')->with('success', 'Pedido creado con éxito');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Hubo un problema al registrar el pedido: ' . $e->getMessage()]);
+            if ($almacenProducto->CantidadExistente <= 0) {
+                throw new \Exception("El producto '{$almacenProducto->producto->NombreProducto}' está agotado.");
+            }
+
+            if ($detalle['Cantidad'] > $almacenProducto->CantidadExistente) {
+                throw new \Exception("Stock insuficiente para el producto '{$almacenProducto->producto->NombreProducto}'. Disponible: {$almacenProducto->CantidadExistente}, solicitado: {$detalle['Cantidad']}.");
+            }
+
+            // Registrar detalle del pedido
+            Detallepedido::create([
+                'idPedido' => $pedido->id,
+                'idProducto' => $detalle['idProducto'],
+                'Cantidad' => $detalle['Cantidad'],
+                'PrecioCompra' => $detalle['PrecioCompra'],
+            ]);
+
+            // Descontar stock
+            $almacenProducto->CantidadExistente -= $detalle['Cantidad'];
+            $almacenProducto->save();
         }
+
+        DB::commit();
+        return redirect()->route('pedido.create')->with('success', 'Pedido creado con éxito y stock actualizado');
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return back()->withErrors(['error' => $e->getMessage()]);
     }
-
-
-
-
+}
 
 
 }

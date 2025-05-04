@@ -15,6 +15,7 @@
     <table>
         <thead>
             <tr>
+                <th>Codigo</th>
                 <th>Fecha del Pedido</th>
                 <th>Producto</th>
                 <th>Cantidad</th>
@@ -25,6 +26,7 @@
             @foreach($pedidos as $pedido)
                 @foreach($pedido->detallepedidos as $detalle)
                     <tr>
+                        <td>{{$pedido->id}}</td>
                         <td>{{ $pedido->FechaPedido->format('d-m-Y') }}</td>
                         <td>{{ $detalle->producto->NombreProducto }}</td>
                         <td>{{ $detalle->Cantidad }}</td>

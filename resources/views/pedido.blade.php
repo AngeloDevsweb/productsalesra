@@ -7,6 +7,19 @@
         <div class="bg-indigo-700 p-2 rounded-md text-white mb-6">
             <a href="/reporte-pedidos" target="_blank">Generar Reporte de pedidos</a>
         </div>
+
+        {{-- Mostrar errores generales --}}
+        @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+                <strong>¡Ups! Algo salió mal.</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('pedido.store') }}" method="POST">
             @csrf
 
@@ -15,14 +28,20 @@
                 <select name="idCliente" id="idCliente" class="w-full border-gray-300 rounded-md shadow-sm" required>
                     <option value="">Seleccione un cliente</option>
                     @foreach($clientes as $cliente)
-                        <option value="{{ $cliente->id }}">{{ $cliente->NombrePersona }}</option>
+                        <option value="{{ $cliente->id }}" {{ old('idCliente') == $cliente->id ? 'selected' : '' }}>{{ $cliente->NombrePersona }}</option>
                     @endforeach
                 </select>
+                @error('idCliente')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label for="FechaPedido" class="block text-sm font-medium text-gray-700">Fecha del Pedido</label>
-                <input type="date" name="FechaPedido" id="FechaPedido" class="w-full border-gray-300 rounded-md shadow-sm" required>
+                <input type="date" name="FechaPedido" id="FechaPedido" class="w-full border-gray-300 rounded-md shadow-sm" value="{{ old('FechaPedido') }}" required>
+                @error('FechaPedido')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
@@ -30,22 +49,28 @@
                 <select name="idMetodoPago" id="idMetodoPago" class="w-full border-gray-300 rounded-md shadow-sm" required>
                     <option value="">Seleccione un método de pago</option>
                     @foreach($metodosPago as $metodo)
-                        <option value="{{ $metodo->id }}">{{ $metodo->NombreMetodo }}</option>
+                        <option value="{{ $metodo->id }}" {{ old('idMetodoPago') == $metodo->id ? 'selected' : '' }}>{{ $metodo->NombreMetodo }}</option>
                     @endforeach
                 </select>
+                @error('idMetodoPago')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mb-4">
                 <label for="EstadoPedido" class="block text-sm font-medium text-gray-700">Estado del Pedido</label>
                 <select name="EstadoPedido" id="EstadoPedido" class="w-full border-gray-300 rounded-md shadow-sm" required>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En Proceso">En Proceso</option>
-                    <option value="En Espera">En Espera</option>
-                    <option value="Enviado">Enviado</option>
-                    <option value="Entregado">Entregado</option>
-                    <option value="Cancelado">Cancelado</option>
-                    <option value="Devuelto">Devuelto</option>
+                    <option value="Pendiente" {{ old('EstadoPedido') == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
+                    <option value="En Proceso" {{ old('EstadoPedido') == 'En Proceso' ? 'selected' : '' }}>En Proceso</option>
+                    <option value="En Espera" {{ old('EstadoPedido') == 'En Espera' ? 'selected' : '' }}>En Espera</option>
+                    <option value="Enviado" {{ old('EstadoPedido') == 'Enviado' ? 'selected' : '' }}>Enviado</option>
+                    <option value="Entregado" {{ old('EstadoPedido') == 'Entregado' ? 'selected' : '' }}>Entregado</option>
+                    <option value="Cancelado" {{ old('EstadoPedido') == 'Cancelado' ? 'selected' : '' }}>Cancelado</option>
+                    <option value="Devuelto" {{ old('EstadoPedido') == 'Devuelto' ? 'selected' : '' }}>Devuelto</option>
                 </select>
+                @error('EstadoPedido')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div id="detalles-container">
@@ -54,13 +79,14 @@
                         <option value="">Seleccione un producto</option>
                         @foreach($productos as $producto)
                             <option value="{{ $producto->id }}" 
-                                data-precio="{{ $producto->precios->isNotEmpty() ? $producto->precios->first()->Preciop : 0 }}">
+                                data-precio="{{ $producto->precios->isNotEmpty() ? $producto->precios->first()->Preciop : 0 }}"
+                                {{ old('detalles.0.idProducto') == $producto->id ? 'selected' : '' }}>
                                 {{ $producto->NombreProducto }}
                             </option>
                         @endforeach
                     </select>
-                    <input type="number" name="detalles[0][Cantidad]" class="cantidad-input w-1/3 border-gray-300 rounded-md shadow-sm" placeholder="Cantidad" min="1" required>
-                    <input type="number" name="detalles[0][PrecioCompra]" class="precio-input w-1/3 border-gray-300 rounded-md shadow-sm" placeholder="Precio" readonly>
+                    <input type="number" name="detalles[0][Cantidad]" class="cantidad-input w-1/3 border-gray-300 rounded-md shadow-sm" placeholder="Cantidad" min="1" value="{{ old('detalles.0.Cantidad') }}" required>
+                    <input type="number" name="detalles[0][PrecioCompra]" class="precio-input w-1/3 border-gray-300 rounded-md shadow-sm" placeholder="Precio" readonly value="{{ old('detalles.0.PrecioCompra') }}">
                 </div>
             </div>
 
