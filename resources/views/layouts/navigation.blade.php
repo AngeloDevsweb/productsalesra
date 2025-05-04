@@ -18,6 +18,12 @@
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('productos.qr')" :active="request()->routeIs('productos.qr')">
+                        Productos con RA
+                    </x-nav-link>
+                </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('empleado.create')" :active="request()->routeIs('empleado.create')">
                         Empleado
                     </x-nav-link>

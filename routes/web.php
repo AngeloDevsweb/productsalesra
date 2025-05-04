@@ -10,6 +10,7 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PrecioController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QrProductos;
 use App\Http\Controllers\ReportePedidoController;
 use App\Http\Controllers\TallaController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,9 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    //mostrar lista de qe y productos ra
+    Route::get('/productos/realidad-virtual',[QrProductos::class,'mostrarLista'])->name('productos.qr');
+
     Route::get('/empleado',[EmpleadoController::class,'createEmpleado'])->name('empleado.create');
     Route::post('/empleado', [EmpleadoController::class, 'storeEmpleado'])->name('empleado.store');
 
@@ -34,6 +38,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/cliente',[ClienteController::class,'createPersona'])->name('cliente.create');
     Route::post('/cliente', [ClienteController::class, 'storePersona'])->name('cliente.store');
 
+
+    // listar productos
+    Route::get('/lista-productos', [ProductoController::class, 'listarProductos'])->name('producto.lista');
     Route::get('/producto', [ProductoController::class, 'viewProduct'])->name('producto.view');
     Route::get('/productos/crear', [ProductoController::class, 'create'])->name('producto.create');
     Route::post('/productos/save', [ProductoController::class, 'store'])->name('productos.store');

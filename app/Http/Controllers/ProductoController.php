@@ -14,6 +14,14 @@ class ProductoController extends Controller
     public function viewProduct(){
         return view('producto');
     }
+
+    public function listarProductos()
+{
+    $productos = Producto::with(['tallas', 'colors', 'precios', 'almacens'])->get();
+
+    return view('productos.listaproductos', compact('productos'));
+}
+
     public function index()
     {
         $productos = Producto::with(['categorium', 'colors', 'tallas'])->get();
