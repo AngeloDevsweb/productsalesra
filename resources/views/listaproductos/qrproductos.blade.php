@@ -12,23 +12,31 @@
                 <div class="bg-white shadow-lg rounded-xl p-6 text-center transition-transform transform hover:scale-105 duration-300 ease-in-out
 ">
                     <img src="{{ asset('faldablanca.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Producto A</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Vestido Blanco</h3>
                     <p class="text-sm text-indigo-600 italic">Escanea el QR y mira la magia.</p>
                 </div>
 
                 {{-- CARD 2 --}}
                 <div class="bg-white shadow-lg rounded-xl p-6 text-center transition-transform transform hover:scale-105 duration-300 ease-in-out
 ">
-                    <img src="{{ asset('vestidoblanco.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Producto B</h3>
+                    <img src="{{ asset('camisablanca.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Camisa de Gala</h3>
                     <p class="text-sm text-indigo-600 italic">Escanea el QR y mira la magia.</p>
                 </div>
 
                 {{-- CARD 3 --}}
                 <div class="bg-white shadow-lg rounded-xl p-6 text-center transition-transform transform hover:scale-105 duration-300 ease-in-out
 ">
-                    <img src="{{ asset('images/qr3.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Producto C</h3>
+                    <img src="{{ asset('camisa.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Camisa Elegante</h3>
+                    <p class="text-sm text-indigo-600 italic">Escanea el QR y mira la magia.</p>
+                </div>
+
+                {{-- CARD 4 --}}
+                <div class="bg-white shadow-lg rounded-xl p-6 text-center transition-transform transform hover:scale-105 duration-300 ease-in-out
+">
+                    <img src="{{ asset('vestidonegro.png') }}" alt="QR" class="w-40 h-40 mx-auto mb-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Vestido Negro Gala</h3>
                     <p class="text-sm text-indigo-600 italic">Escanea el QR y mira la magia.</p>
                 </div>
             </div>
